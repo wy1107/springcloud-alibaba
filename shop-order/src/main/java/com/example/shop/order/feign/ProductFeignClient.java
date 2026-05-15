@@ -1,6 +1,7 @@
 package com.example.shop.order.feign;
 
 import com.example.shop.common.entity.Product;
+import com.example.shop.order.fallback.ProductFeignClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +13,13 @@ import java.util.Map;
  * 声明式调用商品微服务，替代硬编码的RestTemplate方式
  * value: 目标服务在Nacos中注册的服务名
  * 内置集成了Spring Cloud LoadBalancer，默认实现负载均衡
+ *
+ * Feign整合Sentinel选择fallbackFactory而非fallback：
+ * - fallbackFactory可以获取到具体的异常信息（Throwable），便于排查问题
+ * - fallback只能返回兜底数据，无法获取异常详情
+ * - 注意：fallback和fallbackFactory只能使用其中一种
  */
-@FeignClient(value = "service-product")
+@FeignClient(value = "service-product", fallbackFactory = ProductFeignClientFallbackFactory.class)
 public interface ProductFeignClient {
 
     /**

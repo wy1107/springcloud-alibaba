@@ -18,3 +18,8 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848  # Nacos服务注册中心地址
+    sentinel:
+      transport:
+        dashboard: localhost:8858    # Sentinel控制台地址（已改为8858端口）
+        port: 8719                   # Sentinel客户端与Dashboard通信端口（商品服务:8719）
+      web-context-unify: false       # 关闭上下文合并，支持链路限流

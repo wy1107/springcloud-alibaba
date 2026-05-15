@@ -18,11 +18,31 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848  # Nacos服务注册中心地址
+    sentinel:
+      transport:
+        dashboard: localhost:8858    # Sentinel控制台地址（已改为8858端口）
+        port: 8720                   # Sentinel客户端与Dashboard通信端口（订单服务:8720）
+      web-context-unify: false       # 关闭上下文合并，支持链路限流
+      datasource:                    # Sentinel规则持久化到Nacos（订单服务作为示范）
+        flow:                        # 流控规则数据源
+          nacos:
+            server-addr: 127.0.0.1:8848
+            dataId: ${spring.application.name}-flow-rules
+            groupId: SENTINEL_GROUP
+            rule-type: flow
+        degrade:                     # 降级规则数据源
+          nacos:
+            server-addr: 127.0.0.1:8848
+            dataId: ${spring.application.name}-degrade-rules
+            groupId: SENTINEL_GROUP
+            rule-type: degrade
 
-# Feign超时配置
+# Feign超时配置 + Sentinel整合
 feign:
   client:
     config:
       default:
         connectTimeout: 5000   # 连接超时5秒
         readTimeout: 10000     # 读取超时10秒
+  sentinel:
+    enabled: true              # 开启Feign对Sentinel的支持
