@@ -1,45 +1,52 @@
 # CODEBUDDY.md This file provides guidance to DHCCJRYYCPB when working with code in this repository.
 
+## Project Layout
+
+This is a **前后端分离** project:
+- `backend/` — Spring Cloud Alibaba 后端微服务（Java/Maven）
+- `frontend/` — 前端项目（预留）
+- `doc/` — 共享文档（前后端通用）
+
 ## Build Commands
 
 **Install common module first (required before any other build):**
 ```
-mvn clean install -DskipTests -f shop-common/pom.xml
+mvn clean install -DskipTests -f backend/shop-common/pom.xml
 ```
 
 **Build all modules:**
 ```
-mvn clean package -DskipTests
+mvn clean package -DskipTests -f backend/pom.xml
 ```
 
 **Build a single service:**
 ```
-mvn clean package -DskipTests -f shop-order/pom.xml
+mvn clean package -DskipTests -f backend/shop-order/pom.xml
 ```
 
 **Run a single service:**
 ```
-java -jar shop-product/target/shop-product-1.0-SNAPSHOT.jar
-java -jar shop-order/target/shop-order-1.0-SNAPSHOT.jar
-java -jar shop-user/target/shop-user-1.0-SNAPSHOT.jar
-java -jar api-gateway/target/api-gateway-1.0-SNAPSHOT.jar
+java -jar backend/shop-product/target/shop-product-1.0-SNAPSHOT.jar
+java -jar backend/shop-order/target/shop-order-1.0-SNAPSHOT.jar
+java -jar backend/shop-user/target/shop-user-1.0-SNAPSHOT.jar
+java -jar backend/api-gateway/target/api-gateway-1.0-SNAPSHOT.jar
 ```
 
 **Run with custom port (for multi-instance load balancing):**
 ```
-java -jar shop-product/target/shop-product-1.0-SNAPSHOT.jar --server.port=8082
+java -jar backend/shop-product/target/shop-product-1.0-SNAPSHOT.jar --server.port=8082
 ```
 
 **Run tests for a single module:**
 ```
-mvn test -f shop-product/pom.xml
-mvn test -f shop-order/pom.xml
-mvn test -f api-gateway/pom.xml
+mvn test -f backend/shop-product/pom.xml
+mvn test -f backend/shop-order/pom.xml
+mvn test -f backend/api-gateway/pom.xml
 ```
 
 **Run a single test class:**
 ```
-mvn test -f shop-product/pom.xml -Dtest=ProductBlockHandlerTest
+mvn test -f backend/shop-product/pom.xml -Dtest=ProductBlockHandlerTest
 ```
 
 ## Architecture
