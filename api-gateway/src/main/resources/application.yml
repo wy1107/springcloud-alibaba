@@ -1,0 +1,60 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    # Nacos服务注册与发现
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848  # Nacos服务注册中心地址
+    # Gateway路由配置
+    gateway:
+      # 开启服务发现路由（简写版），可通过 网关地址/微服务名/接口 访问
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true  # 服务名小写匹配
+      # 路由规则配置（增强版，使用lb://从Nacos获取服务地址+负载均衡）
+      routes:
+        # 商品服务路由
+        - id: product_route
+          uri: lb://service-product
+          predicates:
+            - Path=/product/**
+          filters:
+            - Log=true      # 开启详细日志
+            - Timer=3000     # 超过3000ms输出WARN
+            - StripPrefix=0
+        # 订单服务路由
+        - id: order_route
+          uri: lb://service-order
+          predicates:
+            - Path=/order/**
+          filters:
+            - StripPrefix=0
+        # 用户服务路由
+        - id: user_route
+          uri: lb://service-user
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix=0
+    # Sentinel配置
+    sentinel:
+      transport:
+        dashboard: localhost:8858    # Sentinel控制台地址
+        port: 8722                   # Sentinel客户端通信端口（避免与product:8719, order:8720, user:8721冲突）
+      # Gateway的Sentinel filter配置
+      scg:
+        fallback:
+          mode: response             # 限流时返回自定义响应
+          response-status: 429       # HTTP状态码
+          response-body: '{"code":429,"msg":"网关限流，请稍后重试"}'  # 默认限流响应
+
+# 日志级别配置
+logging:
+  level:
+    com.example.shop.gateway: DEBUG
+    org.springframework.cloud.gateway: INFO
