@@ -7,6 +7,10 @@
 # Maven
 target/
 
+# Node
+node_modules/
+dist/
+
 # OS
 .DS_Store
 Thumbs.db
