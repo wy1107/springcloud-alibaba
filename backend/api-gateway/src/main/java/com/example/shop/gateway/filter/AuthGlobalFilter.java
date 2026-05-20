@@ -58,7 +58,8 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
      * 实际项目中可从配置中心动态获取白名单
      */
     private boolean isWhitelisted(String path) {
-        // 健康检查端点、用户登录/注册接口等无需鉴权
+        // /user/** 路径全部白名单放行（包含登录接口 /user/login）
+        // 健康检查端点也无需鉴权
         return path.startsWith("/user/")
                 || path.equals("/actuator/health");
     }
